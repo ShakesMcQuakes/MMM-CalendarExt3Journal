@@ -162,6 +162,7 @@
   overflow: hidden;
   text-align: left;
   line-height: 100%;
+  cursor: pointer;
 }
 
 .CX3J .event.single {

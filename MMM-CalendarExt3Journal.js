@@ -59,6 +59,7 @@ Module.register('MMM-CalendarExt3Journal', {
     this.nowTimer = null
     this.activePopup = null
     this.popupCloseHandler = null
+    this.eventPool = new Map()
     this.config.locale = Intl.getCanonicalLocales(this.config.locale ?? config.language)?.[0] ?? 'en-US'
     this.config.instanceId = this.config?.instanceId ?? this.identifier
     this.config.hourLength = Math.ceil((this.config.hourLength <= 1) ? 6 : this.config.hourLength)

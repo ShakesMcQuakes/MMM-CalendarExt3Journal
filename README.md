@@ -15,7 +15,7 @@ Magic mirror module for presenting events as daily/weekly journal style.
 - locale-aware calendar
 - customizing events: filtering, sorting, transforming
 - multi-instance available. You don't need to copy and rename the module. Just add one more configuration in your `config.js`.
-- Tap any rendered event to open the existing CalendarExt3 detail popup ecosystem (EXT-Popup, EXT-Alert, MMM-CalendarExt3Agenda).
+- Tap any rendered event to open the built-in CalendarExt3-style popover while optionally continuing to broadcast details for EXT-Popup/EXT-Alert/MMM-CalendarExt3Agenda.
 
 
 ## Install OR Update
@@ -121,6 +121,12 @@ All the properties are omittable, and if omitted, a default value will be applie
 |`animationSpeed` | 1000 | (ms) Refreshing the view smoothly. |
 |`useSymbol` | true | Whether to show font-awesome symbold instead of simple dot icon. |
 |`useIconify` | false | If set `true`, You can use `iconify-icon` instead of `fontawesome`. |
+|`useNativePopover`| true | Enables the in-module MagicMirror popover that mirrors `MMM-CalendarExt3`. Set to `false` to only emit notifications for external popup helpers. |
+|`emitDetailNotification`| true | When `true`, tapping an event still emits `CALENDAR_EXT3_DETAIL` so modules like `EXT-Popup` can respond. Set to `false` if you only want the built-in popover. |
+|`popoverTemplate`| `./popover.html` | Path (relative to the module folder) of the popover HTML template. Override if you maintain your own markup. |
+|`popoverTimeout`| `30000` | How long (ms) the popover stays open before auto-hiding. |
+|`popoverPeriodOptions`| `{ dateStyle: 'short', timeStyle: 'short' }` | Intl formatting options when rendering start/end for non-fullday events inside the popover. |
+|`popoverDateOptions`| `{ dateStyle: 'full' }` | Intl formatting options for fullday events inside the popover header. |
 |`weekends` | (auto-filled by locale) |(Array of day order). e.g. `weekends: [1, 3]` means Monday and Wedneseday would be regarded as weekends. Usually you don't have to set this value. <br> **Auto-filled by locale unless you set manually.** |
 |`firstDayOfWeek`| (auto-filled by locale) | Monday is the first day of the week according to the international standard ISO 8601, but in the US, Canada, Japan and some cultures, it's counted as the second day of the week. If you want to start the week from Monday, set this property to `1`. If you want Sunday, set `0`. <br> Sunday:0, Monday:1, Tuesday:2, ..., Saturday:6 <br> **Auto-filled by locale unless you set manually.** |
 |`minimalDaysOfNewYear` | (auto-filled by locale) | ISO 8601 also says **each week's year is the Gregorian year in which the Thursday falls**. The first week of the year, hence, always contains 4 January. However, the US (Yes, it is.) system differs from standards. In the US, **containing 1 January** defines the first week. In that case, set this value to `1`. And under some other culture, you might need to modify this. <br> **Auto-filled by locale unless you set manually.** |
@@ -154,8 +160,10 @@ Return to the original config value .
 
 ### Outgoing Notification
 #### `CALENDAR_EXT3_DETAIL`, payload: { title, description, location, startDate, endDate, calendarName, color }
-- Emitted whenever a rendered event (single or fullday) is tapped or clicked.
+- Emitted whenever a rendered event (single or fullday) is tapped or clicked **unless** you disable it via `emitDetailNotification: false`.
 - Payload follows the same structure used by `MMM-CalendarExt3`, so popup helpers like `EXT-Popup`, `EXT-Alert`, or `MMM-CalendarExt3Agenda` can be reused without changes.
+
+> Tip: Keep both `useNativePopover: true` and `emitDetailNotification: true` to show the built-in popover and still drive other popup modules simultaneously.
 
 Example payload:
 

@@ -314,3 +314,143 @@
 .CX3J .cell.today.last {
   border-bottom: 2px solid gold;
 }
+
+/* popover */
+
+#CX3_POPOVER {
+  max-width: 50%;
+  min-width: 25%;
+  height: fit-content;
+  max-height: calc(max(fit-content, 80%) - 20px);
+  background-color: white;
+  border-radius: 10px;
+  position: absolute;
+  box-shadow: 5px 5px 20px 0 #000;
+  font-size: 90%;
+}
+
+#CX3_POPOVER[popover] {
+  padding: 0;
+}
+
+#CX3_POPOVER:popover-open {
+  animation: slideIn 0.5s ease-in-out;
+}
+
+#CX3_POPOVER::backdrop {
+  background-color: rgb(127 127 127 / 25%);
+  backdrop-filter: blur(5px);
+}
+
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(200px);
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+#CX3_POPOVER .header {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 5px;
+  font-size: 150%;
+  font-weight: bold;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: white;
+  background-color: black;
+}
+
+#CX3_POPOVER .header[data-is-fullday="true"] {
+  background-color: var(--calendarColor);
+  color: var(--oppositeColor);
+}
+
+#CX3_POPOVER .header[data-is-fullday="false"] {
+  background-color: var(--oppositeColor);
+  color: var(--calendarColor);
+}
+
+#CX3_POPOVER .content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 20px;
+  background-color: white;
+  overflow-y: auto;
+}
+
+#CX3_POPOVER .content .name {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 75%;
+  color: darkmagenta;
+}
+
+#CX3_POPOVER .content .value {
+  margin-left: 10px;
+  margin-bottom: 10px;
+  font-size: 90%;
+  color: black;
+  white-space: unset;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  text-wrap: balance;
+  overflow-y: hidden;
+}
+
+#CX3_POPOVER .content .list {
+  margin: 0;
+  padding: 0;
+}
+
+#CX3_POPOVER .content .eventItem {
+  margin-bottom: 5px;
+}
+
+#CX3_POPOVER .eventItem {
+  display: flex;
+  flex-flow: row wrap;
+  list-style: none;
+}
+
+#CX3_POPOVER .eventItem .symbol {
+  color: var(--calendarColor);
+  font-weight: bold;
+}
+
+#CX3_POPOVER .eventItem .title {
+  margin-left: 10px;
+  font-weight: bold;
+}
+
+#CX3_POPOVER .eventItem .time {
+  flex-basis: 100%;
+}
+
+#CX3_POPOVER .eventItem .full {
+  margin-left: 30px;
+}
+
+#CX3_POPOVER .criteriaItem.period .name::before {
+  content: "PERIOD";
+}
+
+#CX3_POPOVER .criteriaItem.location .name::before {
+  content: "LOCATION";
+}
+
+#CX3_POPOVER .criteriaItem.description .name::before {
+  content: "DESCRIPTION";
+}
+
+#CX3_POPOVER .criteriaItem.calendar .name::before,
+#CX3_POPOVER .criteriaItem.calendarName .name::before {
+  content: "CALENDAR";
+}

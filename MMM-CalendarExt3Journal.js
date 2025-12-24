@@ -42,24 +42,16 @@ Module.register('MMM-CalendarExt3Journal', {
     minimalDaysOfNewYear: null,
     weekends: [],
     useIconify: false,
-    enableEventPopup: true,
-    popupShowFields: ['title', 'time', 'location', 'description', 'calendar'],
-    popupDateTimeOptions: {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-    },
   },
 
 
   getStyles: function () {
-    return ['MMM-CalendarExt3Journal.css']
+    return [ 'MMM-CalendarExt3Journal.css' ]
   },
 
   start: function () {
     this.nowTimer = null
-    this.activePopup = null
-    this.popupCloseHandler = null
-    this.config.locale = Intl.getCanonicalLocales(this.config.locale ?? config.language)?.[0] ?? 'en-US'
+    this.config.locale = Intl.getCanonicalLocales(this.config.locale ?? config.language )?.[0] ?? 'en-US'
     this.config.instanceId = this.config?.instanceId ?? this.identifier
     this.config.hourLength = Math.ceil((this.config.hourLength <= 1) ? 6 : this.config.hourLength)
     this._ready = false
@@ -101,15 +93,15 @@ Module.register('MMM-CalendarExt3Journal', {
       this._domReady = resolve
     })
 
-    Promise.allSettled([_moduleLoaded, _firstData, _domCreated]).then((result) => {
+    Promise.allSettled([ _moduleLoaded, _firstData, _domCreated ]).then((result) => {
       this._ready = true
       this.library.prepareMagic()
-      let { payload, sender } = result[1].value
+      let { payload, sender } = result[ 1 ].value
       this.fetch(payload, sender, this.activeConfig)
       this._firstDataFetched()
     })
 
-    Promise.allSettled([_firstFetched]).then(() => {
+    Promise.allSettled([ _firstFetched ]).then(() => {
       setTimeout(() => {
         this.updateView({ ...this.activeConfig })
       }, this.config.waitFetch)
@@ -117,7 +109,7 @@ Module.register('MMM-CalendarExt3Journal', {
   },
 
 
-  notificationReceived: function (notification, payload, sender) {
+  notificationReceived: function(notification, payload, sender) {
     if (notification === this.config.notification) {
       this.fetch(payload, sender, this.activeConfig)
     }
@@ -154,7 +146,7 @@ Module.register('MMM-CalendarExt3Journal', {
     }
   },
 
-  getDom: function () {
+  getDom: function() {
     let dom = document.createElement('div')
     dom.classList.add('bodice', 'CX3J_' + this.activeConfig.instanceId, 'CX3J')
     dom.style.setProperty('--moduleHeight', this.activeConfig.height)
@@ -172,8 +164,8 @@ Module.register('MMM-CalendarExt3Journal', {
     let today = new Date()
 
     let startDay = (staticWeek)
-      ? getBeginOfWeek(today, options)
-      : new Date(today.getFullYear(), today.getMonth(), today.getDate() + dayIndex)
+    ? getBeginOfWeek(today, options)
+    : new Date(today.getFullYear(), today.getMonth(), today.getDate() + dayIndex)
     let startHour = new Date(
       startDay.getFullYear(),
       startDay.getMonth(),
@@ -238,9 +230,9 @@ Module.register('MMM-CalendarExt3Journal', {
       dayDom = assignDayClass(dayDom, day, options)
       dayDom.innerHTML = new Intl.DateTimeFormat(options.locale, options.dateHeaderOptions).formatToParts(day)
         .reduce((prev, cur, curIndex, arr) => {
-          prev = prev + `<span class="dayTimeParts ${cur.type} seq_${curIndex}">${cur.value}</span>`
-          return prev
-        }, '')
+        prev = prev + `<span class="dayTimeParts ${cur.type} seq_${curIndex}">${cur.value}</span>`
+        return prev
+      }, '')
       header.appendChild(dayDom)
     }
 
@@ -258,19 +250,19 @@ Module.register('MMM-CalendarExt3Journal', {
 
     const halfHour = 30
 
-    const now = [today.getHours(), (today.getMinutes() < halfHour) ? true : false]
+    const now = [ today.getHours(), (today.getMinutes() < halfHour) ? true : false ]
     for (let i = 0; i < (hourLength * 2); i++) {
       let even = (i % 2 === 0)
       let pm = new Date(startHour.getTime())
       pm.setMinutes(startHour.getMinutes() + (i * halfHour))
-      const current = (pm.getHours() === now[0] && even === now[1])
+      const current = (pm.getHours() === now[ 0 ] && even === now[ 1 ])
       const index = document.createElement('div')
       index.classList.add('index', 'gridCell', (even) ? 'even' : 'odd', (current) ? 'now' : 'notnow')
       index.innerHTML = new Intl.DateTimeFormat(options.locale, options.hourIndexOptions).formatToParts(pm)
-        .reduce((prev, cur, curIndex, arr) => {
-          prev = prev + `<span class="indexTimeParts ${cur.type} seq_${curIndex} ${cur.type}">${cur.value}</span>`
-          return prev
-        }, '')
+      .reduce((prev, cur, curIndex, arr) => {
+        prev = prev + `<span class="indexTimeParts ${cur.type} seq_${curIndex} ${cur.type}">${cur.value}</span>`
+        return prev
+      }, '')
       index.dataset.isoString = pm.toISOString()
       index.dataset.hour = pm.getHours()
       index.dataset.minute = pm.getMinutes()
@@ -363,13 +355,6 @@ Module.register('MMM-CalendarExt3Journal', {
       eDom.style.setProperty('--intersect', event.intersect)
       if (event?.continueFromPrev) eDom.classList.add('continueFromPrev')
       if (event?.continueToNext) eDom.classList.add('continueToNext')
-      if (options.enableEventPopup) {
-        eDom.style.cursor = 'pointer'
-        eDom.addEventListener('click', (e) => {
-          e.stopPropagation()
-          this.showEventPopup(eDom, options)
-        })
-      }
       cell.appendChild(eDom)
     }
 
@@ -388,41 +373,14 @@ Module.register('MMM-CalendarExt3Journal', {
       let endDate = new Date(+event.endDate)
       let startDay = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate())
       let endDay = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate())
-
-      if (!options.staticWeek) {
-        for (let dr of dateRange) {
-          if (dr.date.valueOf() >= startDay.valueOf() && dr.date.valueOf() < endDay.valueOf()) {
-            let eDom = renderEventAgenda(event, options)
-            eDom.classList.add('notsingle')
-            eDom.style.setProperty('--eventStart', dr.index + 1)
-            eDom.style.setProperty('--eventEnd', dr.index + 2)
-            if (options.enableEventPopup) {
-              eDom.style.cursor = 'pointer'
-              eDom.addEventListener('click', (e) => {
-                e.stopPropagation()
-                this.showEventPopup(eDom, options)
-              })
-            }
-            fsDom.appendChild(eDom)
-          }
-        }
-      } else {
-        let startIndex = (dateRange.find((d) => d.date.valueOf() === startDay.valueOf())?.index ?? 0) + 1
-        let endIndex = (dateRange.find((d) => d.date.valueOf() === endDay.valueOf())?.index ?? -3) + 2
-        if (startIndex === endIndex) endIndex++ // Fix for zero-length or single-day span issue in grid logic if relevant, though logic usually ensures start < end
-        let eDom = renderEventAgenda(event, options)
-        eDom.classList.add('notsingle')
-        eDom.style.setProperty('--eventStart', startIndex)
-        eDom.style.setProperty('--eventEnd', endIndex)
-        if (options.enableEventPopup) {
-          eDom.style.cursor = 'pointer'
-          eDom.addEventListener('click', (e) => {
-            e.stopPropagation()
-            this.showEventPopup(eDom, options)
-          })
-        }
-        fsDom.appendChild(eDom)
-      }
+      let startIndex = (dateRange.find((d) => d.date.valueOf() === startDay.valueOf())?.index ?? 0) + 1
+      let endIndex = (dateRange.find((d) => d.date.valueOf() === endDay.valueOf())?.index ?? -3) + 2
+      if (startIndex === endIndex) endIndex++
+      let eDom = renderEventAgenda(event, options)
+      eDom.classList.add('notsingle')
+      eDom.style.setProperty('--eventStart', startIndex)
+      eDom.style.setProperty('--eventEnd', endIndex)
+      fsDom.appendChild(eDom)
     }
     return dom
   },
@@ -436,17 +394,17 @@ Module.register('MMM-CalendarExt3Journal', {
     const prepared = prepareEvents({
       targetEvents: calendarFilter(events, options.calendarSet),
       config: options,
-      range: [startDateWindow.valueOf(), endDateWindow.valueOf()],
+      range: [ startDateWindow.valueOf(), endDateWindow.valueOf() ],
     })
 
-    const [fulldayEvents, singleEvents] = prepared.reduce(([fulldayEvents, singleEvents], event) => { // eslint-disable-line no-unused-vars
+    const [ fulldayEvents, singleEvents ] = prepared.reduce(([ fulldayEvents, singleEvents ], event) => { // eslint-disable-line no-unused-vars
       if (event.isFullday || event.isMultiday) {
         fulldayEvents.push({ ...event })
       } else {
         singleEvents.push({ ...event })
       }
-      return [fulldayEvents, singleEvents]
-    }, [[], []])
+      return [ fulldayEvents, singleEvents ]
+    }, [ [], [] ])
 
     const result = eventsByDate({
       targetEvents: singleEvents,
@@ -493,241 +451,19 @@ Module.register('MMM-CalendarExt3Journal', {
         return 0
       })
       for (let i = 0; i < singleRanged.length; i++) {
-        let event = singleRanged[i]
+        let event = singleRanged[ i ]
         for (let j = i + 1; j < singleRanged.length; j++) {
-          let compare = singleRanged[j]
+          let compare = singleRanged[ j ]
           if (compare.vStartDate >= event.vEndDate || compare.vEndDate <= event.vStartDate) continue
           compare.intersect++
         }
       }
-      regularized = [...regularized, ...singleRanged]
+      regularized = [ ...regularized, ...singleRanged ]
     }
 
     return {
       fullday: fulldayEvents,
       single: regularized,
     }
-  },
-
-  createEventPopup: function (eventElement, options) {
-    const data = {
-      title: eventElement.dataset.title || '',
-      description: eventElement.dataset.description || '',
-      location: eventElement.dataset.location || '',
-      calendarName: eventElement.dataset.calendarName || '',
-      startDate: eventElement.dataset.startDate ? parseInt(eventElement.dataset.startDate) : null,
-      endDate: eventElement.dataset.endDate ? parseInt(eventElement.dataset.endDate) : null,
-      isFullday: eventElement.dataset.fullDayEvent === 'true',
-      symbol: eventElement.dataset.symbol || '',
-      color: eventElement.dataset.color || '',
-    }
-
-    const backdrop = document.createElement('div')
-    backdrop.classList.add('CX3J_eventPopupBackdrop')
-
-    const modal = document.createElement('div')
-    modal.classList.add('CX3J_eventPopupModal')
-    modal.style.setProperty('--animationSpeed', options.animationSpeed)
-
-    const card = document.createElement('div')
-    card.classList.add('CX3J_eventPopupCard')
-    if (data.color) {
-      card.style.setProperty('--eventColor', data.color)
-    }
-
-    // Close button
-    const closeBtn = document.createElement('button')
-    closeBtn.classList.add('CX3J_eventPopupClose')
-    closeBtn.innerHTML = '×'
-    closeBtn.setAttribute('aria-label', 'Close')
-    card.appendChild(closeBtn)
-
-    // Header with symbol and title
-    if (options.popupShowFields.includes('title') && data.title) {
-      const header = document.createElement('div')
-      header.classList.add('CX3J_eventPopupHeader')
-
-      if (data.symbol && options.useSymbol) {
-        const symbolSpan = document.createElement('span')
-        symbolSpan.classList.add('CX3J_eventPopupSymbol')
-        symbolSpan.innerHTML = data.symbol
-        header.appendChild(symbolSpan)
-      }
-
-      const titleDiv = document.createElement('div')
-      titleDiv.classList.add('CX3J_eventPopupTitle')
-      titleDiv.textContent = data.title
-      header.appendChild(titleDiv)
-
-      card.appendChild(header)
-    }
-
-    const content = document.createElement('div')
-    content.classList.add('CX3J_eventPopupContent')
-
-    // Time field
-    if (options.popupShowFields.includes('time') && data.startDate) {
-      const timeRow = document.createElement('div')
-      timeRow.classList.add('CX3J_eventPopupRow')
-
-      const timeLabel = document.createElement('div')
-      timeLabel.classList.add('CX3J_eventPopupLabel')
-      timeLabel.textContent = 'Time'
-      timeRow.appendChild(timeLabel)
-
-      const timeValue = document.createElement('div')
-      timeValue.classList.add('CX3J_eventPopupValue')
-
-      const startDate = new Date(data.startDate)
-      const endDate = data.endDate ? new Date(data.endDate) : null
-
-      if (data.isFullday) {
-        // Full day event - show date range
-        const dateFormatter = new Intl.DateTimeFormat(options.locale, { dateStyle: options.popupDateTimeOptions.dateStyle })
-        if (endDate) {
-          const endDay = new Date(endDate)
-          endDay.setDate(endDay.getDate() - 1) // Adjust for exclusive end date
-          if (startDate.toDateString() === endDay.toDateString()) {
-            timeValue.textContent = dateFormatter.format(startDate)
-          } else {
-            timeValue.textContent = `${dateFormatter.format(startDate)} - ${dateFormatter.format(endDay)}`
-          }
-        } else {
-          timeValue.textContent = dateFormatter.format(startDate)
-        }
-      } else {
-        // Timed event
-        const dateFormatter = new Intl.DateTimeFormat(options.locale, options.popupDateTimeOptions)
-        if (endDate) {
-          const sameDay = startDate.toDateString() === endDate.toDateString()
-          if (sameDay) {
-            const timeFormatter = new Intl.DateTimeFormat(options.locale, { timeStyle: options.popupDateTimeOptions.timeStyle })
-            timeValue.textContent = `${dateFormatter.format(startDate)} - ${timeFormatter.format(endDate)}`
-          } else {
-            timeValue.textContent = `${dateFormatter.format(startDate)} - ${dateFormatter.format(endDate)}`
-          }
-        } else {
-          timeValue.textContent = dateFormatter.format(startDate)
-        }
-      }
-
-      timeRow.appendChild(timeValue)
-      content.appendChild(timeRow)
-    }
-
-    // Location field
-    if (options.popupShowFields.includes('location') && data.location) {
-      const locationRow = document.createElement('div')
-      locationRow.classList.add('CX3J_eventPopupRow')
-
-      const locationLabel = document.createElement('div')
-      locationLabel.classList.add('CX3J_eventPopupLabel')
-      locationLabel.textContent = 'Location'
-      locationRow.appendChild(locationLabel)
-
-      const locationValue = document.createElement('div')
-      locationValue.classList.add('CX3J_eventPopupValue')
-      locationValue.textContent = data.location
-      locationRow.appendChild(locationValue)
-
-      content.appendChild(locationRow)
-    }
-
-    // Description field
-    if (options.popupShowFields.includes('description') && data.description) {
-      const descRow = document.createElement('div')
-      descRow.classList.add('CX3J_eventPopupRow')
-
-      const descLabel = document.createElement('div')
-      descLabel.classList.add('CX3J_eventPopupLabel')
-      descLabel.textContent = 'Description'
-      descRow.appendChild(descLabel)
-
-      const descValue = document.createElement('div')
-      descValue.classList.add('CX3J_eventPopupValue')
-      descValue.textContent = data.description
-      descRow.appendChild(descValue)
-
-      content.appendChild(descRow)
-    }
-
-    // Calendar field
-    if (options.popupShowFields.includes('calendar') && data.calendarName) {
-      const calRow = document.createElement('div')
-      calRow.classList.add('CX3J_eventPopupRow')
-
-      const calLabel = document.createElement('div')
-      calLabel.classList.add('CX3J_eventPopupLabel')
-      calLabel.textContent = 'Calendar'
-      calRow.appendChild(calLabel)
-
-      const calValue = document.createElement('div')
-      calValue.classList.add('CX3J_eventPopupValue')
-      calValue.textContent = data.calendarName
-      calRow.appendChild(calValue)
-
-      content.appendChild(calRow)
-    }
-
-    card.appendChild(content)
-    modal.appendChild(card)
-    backdrop.appendChild(modal)
-
-    return { backdrop, modal, card, closeBtn }
-  },
-
-  showEventPopup: function (eventElement, options) {
-    if (this.activePopup) {
-      this.hideEventPopup()
-    }
-
-    const { backdrop, closeBtn } = this.createEventPopup(eventElement, options)
-    document.body.appendChild(backdrop)
-
-    // Trigger animation
-    requestAnimationFrame(() => {
-      backdrop.classList.add('show')
-    })
-
-    // Close handlers
-    const closePopup = () => this.hideEventPopup()
-
-    closeBtn.addEventListener('click', closePopup)
-    backdrop.addEventListener('click', (e) => {
-      if (e.target === backdrop) {
-        closePopup()
-      }
-    })
-
-    const escapeHandler = (e) => {
-      if (e.key === 'Escape') {
-        closePopup()
-      }
-    }
-    document.addEventListener('keydown', escapeHandler)
-
-    this.activePopup = backdrop
-    this.popupCloseHandler = escapeHandler
-  },
-
-  hideEventPopup: function () {
-    if (!this.activePopup) return
-
-    const backdrop = this.activePopup
-    backdrop.classList.remove('show')
-
-    // Wait for animation to complete before removing
-    setTimeout(() => {
-      if (backdrop.parentNode) {
-        backdrop.parentNode.removeChild(backdrop)
-      }
-    }, this.activeConfig.animationSpeed)
-
-    if (this.popupCloseHandler) {
-      document.removeEventListener('keydown', this.popupCloseHandler)
-      this.popupCloseHandler = null
-    }
-
-    this.activePopup = null
   }
 })

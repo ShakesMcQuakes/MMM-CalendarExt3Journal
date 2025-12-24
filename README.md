@@ -15,11 +15,6 @@ Magic mirror module for presenting events as daily/weekly journal style.
 - locale-aware calendar
 - customizing events: filtering, sorting, transforming
 - multi-instance available. You don't need to copy and rename the module. Just add one more configuration in your `config.js`.
-- **Interactive event popups**: Click or tap on any event to view detailed information including title, time, location, description, and calendar name.
-  - Built-in modal popup system
-  - Touchscreen compatible
-  - Configurable fields and formatting
-  - Smooth animations
 
 
 ## Install OR Update
@@ -125,72 +120,10 @@ All the properties are omittable, and if omitted, a default value will be applie
 |`animationSpeed` | 1000 | (ms) Refreshing the view smoothly. |
 |`useSymbol` | true | Whether to show font-awesome symbold instead of simple dot icon. |
 |`useIconify` | false | If set `true`, You can use `iconify-icon` instead of `fontawesome`. |
-|`enableEventPopup` | true | Enable/disable click-to-view event details popup. |
-|`popupShowFields` | ['title', 'time', 'location', 'description', 'calendar'] | Array of fields to display in the popup. Available fields: 'title', 'time', 'location', 'description', 'calendar'. |
-|`popupDateTimeOptions` | {dateStyle: 'medium', timeStyle: 'short'} | Date/time format options for popup display. See [Intl.DateTimeFormat options](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat#parameters). |
 |`weekends` | (auto-filled by locale) |(Array of day order). e.g. `weekends: [1, 3]` means Monday and Wedneseday would be regarded as weekends. Usually you don't have to set this value. <br> **Auto-filled by locale unless you set manually.** |
 |`firstDayOfWeek`| (auto-filled by locale) | Monday is the first day of the week according to the international standard ISO 8601, but in the US, Canada, Japan and some cultures, it's counted as the second day of the week. If you want to start the week from Monday, set this property to `1`. If you want Sunday, set `0`. <br> Sunday:0, Monday:1, Tuesday:2, ..., Saturday:6 <br> **Auto-filled by locale unless you set manually.** |
 |`minimalDaysOfNewYear` | (auto-filled by locale) | ISO 8601 also says **each week's year is the Gregorian year in which the Thursday falls**. The first week of the year, hence, always contains 4 January. However, the US (Yes, it is.) system differs from standards. In the US, **containing 1 January** defines the first week. In that case, set this value to `1`. And under some other culture, you might need to modify this. <br> **Auto-filled by locale unless you set manually.** |
 
-
-## Notification
-### Interactive Event Popups
-This module includes built-in popup functionality that displays detailed event information when you click or tap on any event. The popup system works seamlessly on both desktop (with mouse clicks) and touchscreen devices.
-
-#### Configuration
-```js
-{
-  module: "MMM-CalendarExt3Journal",
-  position: "bottom_bar",
-  config: {
-    enableEventPopup: true, // Enable popup (default: true)
-    popupShowFields: ['title', 'time', 'location', 'description', 'calendar'], // Fields to show
-    popupDateTimeOptions: {
-      dateStyle: 'medium',
-      timeStyle: 'short'
-    },
-  }
-}
-```
-
-#### Customizing Popup Fields
-You can control which fields appear in the popup by modifying `popupShowFields`:
-
-```js
-// Show only essential information
-popupShowFields: ['title', 'time']
-
-// Show everything
-popupShowFields: ['title', 'time', 'location', 'description', 'calendar']
-
-// Custom selection
-popupShowFields: ['title', 'location', 'calendar']
-```
-
-#### Styling the Popup
-The popup can be styled using CSS. Add custom styles to your `custom.css`:
-
-```css
-/* Change popup background */
-.CX3J_eventPopupCard {
-  background-color: #1a1a1a;
-  color: white;
-}
-
-/* Customize title */
-.CX3J_eventPopupTitle {
-  color: #ff6b6b;
-  font-size: 24px;
-}
-
-/* Adjust popup size */
-.CX3J_eventPopupCard {
-  min-width: 500px;
-  max-width: 700px;
-}
-```
-
-See the `MMM-CalendarExt3Journal.css` file for all available CSS selectors.
 
 ## Notification
 ### Incoming Notifications

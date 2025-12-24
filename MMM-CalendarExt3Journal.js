@@ -162,18 +162,6 @@ Module.register('MMM-CalendarExt3Journal', {
     dom.style.setProperty('--moduleWidth', this.activeConfig.width)
     dom = this.drawBoard(dom, this.activeConfig)
 
-    // Add event delegation for popup clicks
-    if (this.activeConfig.enableEventPopup) {
-      dom.addEventListener('click', (e) => {
-        const eventElement = e.target.closest('.event')
-        if (eventElement) {
-          e.stopPropagation()
-          console.log('[CX3J] Event clicked via delegation:', eventElement.dataset.title)
-          this.showEventPopup(eventElement, this.activeConfig)
-        }
-      })
-    }
-
     return dom
   },
 
@@ -376,6 +364,13 @@ Module.register('MMM-CalendarExt3Journal', {
       eDom.style.setProperty('--intersect', event.intersect)
       if (event?.continueFromPrev) eDom.classList.add('continueFromPrev')
       if (event?.continueToNext) eDom.classList.add('continueToNext')
+      if (options.enableEventPopup) {
+        eDom.style.cursor = 'pointer'
+        eDom.addEventListener('click', (e) => {
+          e.stopPropagation()
+          this.showEventPopup(eDom, options)
+        })
+      }
       cell.appendChild(eDom)
     }
 
@@ -402,6 +397,13 @@ Module.register('MMM-CalendarExt3Journal', {
             eDom.classList.add('notsingle')
             eDom.style.setProperty('--eventStart', dr.index + 1)
             eDom.style.setProperty('--eventEnd', dr.index + 2)
+            if (options.enableEventPopup) {
+              eDom.style.cursor = 'pointer'
+              eDom.addEventListener('click', (e) => {
+                e.stopPropagation()
+                this.showEventPopup(eDom, options)
+              })
+            }
             fsDom.appendChild(eDom)
           }
         }
@@ -413,6 +415,13 @@ Module.register('MMM-CalendarExt3Journal', {
         eDom.classList.add('notsingle')
         eDom.style.setProperty('--eventStart', startIndex)
         eDom.style.setProperty('--eventEnd', endIndex)
+        if (options.enableEventPopup) {
+          eDom.style.cursor = 'pointer'
+          eDom.addEventListener('click', (e) => {
+            e.stopPropagation()
+            this.showEventPopup(eDom, options)
+          })
+        }
         fsDom.appendChild(eDom)
       }
     }
@@ -669,7 +678,6 @@ Module.register('MMM-CalendarExt3Journal', {
   },
 
   showEventPopup: function (eventElement, options) {
-    console.log('[CX3J] showEventPopup called', eventElement.dataset.title)
     if (this.activePopup) {
       this.hideEventPopup()
     }

@@ -163,6 +163,18 @@
   text-align: left;
   line-height: 100%;
   cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.CX3J .event.clickable:hover {
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  background-color: color-mix(in hsl, var(--calendarColor) 85%, transparent);
+}
+
+.CX3J .event.clickable:active {
+  transform: scale(0.98);
+  background-color: color-mix(in hsl, var(--calendarColor) 90%, transparent);
 }
 
 .CX3J .event.single {
@@ -170,7 +182,7 @@
   top: var(--eventTop);
   left: calc(var(--intersect) * 10px);
   right: 5px;
-  border-radius: 5px;
+  border-radius: 10px;
   height: max(calc((100% + var(--borderSize)) * var(--eventHeight)), 20%);
   z-index: 2;
   padding: 2px 5px;

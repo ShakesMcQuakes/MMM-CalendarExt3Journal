@@ -376,6 +376,15 @@ Module.register('MMM-CalendarExt3Journal', {
       eDom.style.setProperty('--intersect', event.intersect)
       if (event?.continueFromPrev) eDom.classList.add('continueFromPrev')
       if (event?.continueToNext) eDom.classList.add('continueToNext')
+      
+      // Add click handler for event popup
+      if (options.enableEventPopup) {
+        eDom.classList.add('clickable')
+        eDom.addEventListener('click', () => {
+          this.showEventPopup(eDom, options)
+        })
+      }
+      
       cell.appendChild(eDom)
     }
 
@@ -402,6 +411,15 @@ Module.register('MMM-CalendarExt3Journal', {
             eDom.classList.add('notsingle')
             eDom.style.setProperty('--eventStart', dr.index + 1)
             eDom.style.setProperty('--eventEnd', dr.index + 2)
+            
+            // Add click handler for event popup
+            if (options.enableEventPopup) {
+              eDom.classList.add('clickable')
+              eDom.addEventListener('click', () => {
+                this.showEventPopup(eDom, options)
+              })
+            }
+            
             fsDom.appendChild(eDom)
           }
         }
@@ -413,6 +431,15 @@ Module.register('MMM-CalendarExt3Journal', {
         eDom.classList.add('notsingle')
         eDom.style.setProperty('--eventStart', startIndex)
         eDom.style.setProperty('--eventEnd', endIndex)
+        
+        // Add click handler for event popup
+        if (options.enableEventPopup) {
+          eDom.classList.add('clickable')
+          eDom.addEventListener('click', () => {
+            this.showEventPopup(eDom, options)
+          })
+        }
+        
         fsDom.appendChild(eDom)
       }
     }

@@ -15,6 +15,7 @@ Magic mirror module for presenting events as daily/weekly journal style.
 - locale-aware calendar
 - customizing events: filtering, sorting, transforming
 - multi-instance available. You don't need to copy and rename the module. Just add one more configuration in your `config.js`.
+- Tap any rendered event to open the existing CalendarExt3 detail popup ecosystem (EXT-Popup, EXT-Alert, MMM-CalendarExt3Agenda).
 
 
 ## Install OR Update
@@ -152,7 +153,36 @@ Return to the original config value .
 > I think these 2 notifications would be enough to control the module's view. This approach is a new way for my all CX3* modules. I'll change other CX3* modules in this way later.
 
 ### Outgoing Notification
-Nothing yet.  (Does it need?)
+#### `CALENDAR_EXT3_DETAIL`, payload: { title, description, location, startDate, endDate, calendarName, color }
+- Emitted whenever a rendered event (single or fullday) is tapped or clicked.
+- Payload follows the same structure used by `MMM-CalendarExt3`, so popup helpers like `EXT-Popup`, `EXT-Alert`, or `MMM-CalendarExt3Agenda` can be reused without changes.
+
+Example payload:
+
+```json
+{
+  "title": "Event title",
+  "description": "Tue Dec 24, 10:00 AM - Tue Dec 24, 11:00 AM\nConference Room\n\nBring notes",
+  "location": "Conference Room",
+  "startDate": "2025-12-24T10:00:00.000Z",
+  "endDate": "2025-12-24T11:00:00.000Z",
+  "calendarName": "Work",
+  "color": "#ff5500"
+}
+```
+
+Add one of the popup modules to your `config.js` to display these details. For example, an `EXT-Popup` setup:
+
+```js
+{
+  module: "EXT-Popup",
+  position: "fullscreen_above",
+  config: {
+    timeout: 0,
+    closeOnTouch: true
+  }
+}
+```
 
 ## Styling with CSS
 You can handle almost all of the visual things with CSS. See the `MMM-CalendarExt3Journal.css` and override your needs into your `custom.css`.

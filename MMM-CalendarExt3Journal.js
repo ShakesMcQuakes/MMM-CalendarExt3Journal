@@ -355,6 +355,7 @@ Module.register('MMM-CalendarExt3Journal', {
       eDom.style.setProperty('--intersect', event.intersect)
       if (event?.continueFromPrev) eDom.classList.add('continueFromPrev')
       if (event?.continueToNext) eDom.classList.add('continueToNext')
+      this.attachEventInteraction(eDom, event)
       cell.appendChild(eDom)
     }
 
@@ -380,9 +381,76 @@ Module.register('MMM-CalendarExt3Journal', {
       eDom.classList.add('notsingle')
       eDom.style.setProperty('--eventStart', startIndex)
       eDom.style.setProperty('--eventEnd', endIndex)
+      this.attachEventInteraction(eDom, event)
       fsDom.appendChild(eDom)
     }
     return dom
+  },
+
+  attachEventInteraction: function (domNode, event) {
+    if (!domNode || !event) return
+    const activate = () => this.showEventDetails(event)
+    domNode.classList.add('interactive')
+    domNode.setAttribute('role', 'button')
+    if (!domNode.hasAttribute('tabindex')) domNode.tabIndex = 0
+    domNode.addEventListener('click', activate)
+    domNode.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter' || ev.key === ' ') {
+        ev.preventDefault()
+        activate()
+      }
+    })
+  },
+
+  showEventDetails: function (event) {
+    if (!event) return
+
+    const toISOString = (value) => {
+      if (value === undefined || value === null) return null
+      const parsed = new Date(value)
+      return Number.isNaN(parsed.valueOf()) ? null : parsed.toISOString()
+    }
+
+    const locale = this.activeConfig?.locale ?? this.config.locale ?? config.language ?? 'en-US'
+    const dateFormatter = new Intl.DateTimeFormat(locale, this.config.eventDateOptions)
+    const timeFormatter = new Intl.DateTimeFormat(locale, this.config.eventTimeOptions)
+    const startDate = event.startDate ?? event.vStartDate
+    const endDate = event.endDate ?? event.vEndDate ?? event.startDate
+    const formatDateTime = (timestamp) => {
+      if (timestamp === undefined || timestamp === null) return ''
+      const date = new Date(timestamp)
+      if (Number.isNaN(date.valueOf())) return ''
+      return `${dateFormatter.format(date)} ${timeFormatter.format(date)}`.trim()
+    }
+
+    const formattedStart = formatDateTime(startDate)
+    const formattedEnd = formatDateTime(endDate)
+    const timeRange = (formattedStart && formattedEnd)
+      ? `${formattedStart} - ${formattedEnd}`
+      : (formattedStart || formattedEnd)
+
+    const locationText = (typeof event.location === 'string') ? event.location.trim() : ''
+    const descriptionText = (typeof event.description === 'string') ? event.description.trim() : ''
+    const descriptionParts = []
+    if (timeRange) descriptionParts.push(timeRange)
+    if (locationText) descriptionParts.push(locationText)
+    if (descriptionText) {
+      if (descriptionParts.length) descriptionParts.push('')
+      descriptionParts.push(descriptionText)
+    }
+    const formattedDescription = descriptionParts.join('\n').trim() || 'No description'
+
+    const payload = {
+      title: event.title || event.summary || 'Event',
+      description: formattedDescription,
+      location: locationText,
+      startDate: toISOString(startDate),
+      endDate: toISOString(endDate),
+      calendarName: event.calendarName || '',
+      color: event.color || '#ffffff'
+    }
+
+    this.sendNotification('CALENDAR_EXT3_DETAIL', payload)
   },
 
   regularize: function (events, options, { startDay, startHour }) {

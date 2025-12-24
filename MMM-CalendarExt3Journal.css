@@ -162,6 +162,16 @@
   overflow: hidden;
   text-align: left;
   line-height: 100%;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.CX3J .event:focus-visible,
+.CX3J .event:active {
+  background-color: color-mix(in hsl, var(--calendarColor) 85%, white);
+  outline: 2px solid color-mix(in hsl, var(--calendarColor), white);
+  outline-offset: 1px;
+  transform: scale(0.99);
 }
 
 .CX3J .event.single {

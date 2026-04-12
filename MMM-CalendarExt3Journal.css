@@ -318,15 +318,18 @@
 /* popover */
 
 #CX3_POPOVER {
-  max-width: 50%;
-  min-width: 25%;
-  height: fit-content;
-  max-height: calc(max(fit-content, 80%) - 20px);
-  background-color: white;
-  border-radius: 10px;
   position: absolute;
+  width: clamp(320px, 40%, 600px);
+  height: fit-content;
+  max-height: 80vh;
+  background-color: color-mix(in srgb, var(--color-background, #000) 85%, transparent);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
   box-shadow: 5px 5px 20px 0 #000;
-  font-size: 90%;
+  font-family: var(--font-primary, "Roboto Condensed"), sans-serif;
+  font-size: var(--font-size-small, 1rem);
+  color: var(--color-text-bright, #fff);
+  overflow: hidden;
 }
 
 #CX3_POPOVER[popover] {
@@ -334,23 +337,28 @@
 }
 
 #CX3_POPOVER:popover-open {
-  animation: slideIn 0.5s ease-in-out;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: opacity 0.25s ease, transform 0.25s ease, display 0.25s allow-discrete;
+}
+
+@starting-style {
+  #CX3_POPOVER:popover-open {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
 }
 
 #CX3_POPOVER::backdrop {
-  background-color: rgb(127 127 127 / 25%);
-  backdrop-filter: blur(5px);
+  background-color: rgb(0 0 0 / 40%);
+  backdrop-filter: blur(3px);
+  transition: background-color 0.25s ease, display 0.25s allow-discrete;
 }
 
-@keyframes slideIn {
-  0% {
-    opacity: 0;
-    transform: translateY(200px);
-  }
-
-  100% {
-    opacity: 1;
-  }
+#CX3_POPOVER .accent-bar {
+  height: 4px;
+  background-color: var(--calendarColor, #fff);
+  border-radius: 12px 12px 0 0;
 }
 
 #CX3_POPOVER .header {
@@ -359,30 +367,51 @@
   justify-content: flex-start;
   align-items: center;
   gap: 5px;
-  font-size: 150%;
-  font-weight: bold;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: white;
-  background-color: black;
+  font-size: var(--font-size-medium, 1.5rem);
+  font-weight: 700;
+  padding: 10px 12px;
+  color: var(--color-text-bright, #fff);
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-#CX3_POPOVER .header[data-is-fullday="true"] {
-  background-color: var(--calendarColor);
-  color: var(--oppositeColor);
+#CX3_POPOVER .header .symbol {
+  color: var(--calendarColor, #fff);
+  flex-shrink: 0;
 }
 
-#CX3_POPOVER .header[data-is-fullday="false"] {
-  background-color: var(--oppositeColor);
-  color: var(--calendarColor);
+#CX3_POPOVER .header .title {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#CX3_POPOVER .header .close {
+  background: none;
+  border: none;
+  color: var(--color-text-dimmed, #666);
+  cursor: pointer;
+  font-size: var(--font-size-small, 1rem);
+  padding: 4px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  line-height: 1;
+  transition: color 0.15s ease;
+}
+
+#CX3_POPOVER .header .close:hover,
+#CX3_POPOVER .header .close:focus-visible {
+  color: var(--color-text-bright, #fff);
+  outline: 1px solid var(--color-text-dimmed, #666);
 }
 
 #CX3_POPOVER .content {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  padding: 20px;
-  background-color: white;
+  padding: 12px 16px 16px;
+  background: transparent;
   overflow-y: auto;
 }
 
@@ -390,52 +419,20 @@
   font-weight: bold;
   text-transform: uppercase;
   font-size: 75%;
-  color: darkmagenta;
+  color: var(--calendarColor, var(--color-text-dimmed, #666));
+  opacity: 0.8;
 }
 
 #CX3_POPOVER .content .value {
   margin-left: 10px;
   margin-bottom: 10px;
-  font-size: 90%;
-  color: black;
+  font-size: var(--font-size-small, 1rem);
+  color: var(--color-text, #999);
   white-space: unset;
   overflow-wrap: break-word;
   hyphens: auto;
   text-wrap: balance;
   overflow-y: hidden;
-}
-
-#CX3_POPOVER .content .list {
-  margin: 0;
-  padding: 0;
-}
-
-#CX3_POPOVER .content .eventItem {
-  margin-bottom: 5px;
-}
-
-#CX3_POPOVER .eventItem {
-  display: flex;
-  flex-flow: row wrap;
-  list-style: none;
-}
-
-#CX3_POPOVER .eventItem .symbol {
-  color: var(--calendarColor);
-  font-weight: bold;
-}
-
-#CX3_POPOVER .eventItem .title {
-  margin-left: 10px;
-  font-weight: bold;
-}
-
-#CX3_POPOVER .eventItem .time {
-  flex-basis: 100%;
-}
-
-#CX3_POPOVER .eventItem .full {
-  margin-left: 30px;
 }
 
 #CX3_POPOVER .criteriaItem.period .name::before {

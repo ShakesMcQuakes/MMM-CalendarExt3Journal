@@ -2,9 +2,11 @@
 <div class="popover" id="CX3_POPOVER" popover="auto">
   <div class="container"></div>
   <template id="CX3_T_EVENTDETAIL">
+  <div class="accent-bar"></div>
   <div class="header">
     <div class="symbol"></div>
     <div class="title"></div>
+    <button class="close" popovertarget="CX3_POPOVER" popovertargetaction="hide" aria-label="Close">✕</button>
   </div>
   <div class="content">
     <dl class="criteria"></dl>
@@ -13,23 +15,6 @@
         <dt class="name"></dt>
         <dd class="value"></dd>
       </div>
-    </template>
-  </div>
-  </template>
-  <template id="CX3_T_EVENTLIST">
-  <div class="header">
-    <div class="date"></div>
-  </div>
-  <div class="content">
-    <ul class="list"></ul>
-    <template id="CX3_T_EVENTITEM">
-      <li class="eventItem">
-        <div class="symbol part"></div>
-        <div class="title part"></div>
-        <div class="time full"></div>
-        <div class="description full"></div>
-        <div class="location full"></div>
-      </li>
     </template>
   </div>
   </template>

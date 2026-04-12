@@ -560,8 +560,8 @@ Module.register('MMM-CalendarExt3Journal', {
     }
 
     const header = container.querySelector('.header')
-    header.style.setProperty('--calendarColor', eventDom.style.getPropertyValue('--calendarColor'))
-    header.style.setProperty('--oppositeColor', eventDom.style.getPropertyValue('--oppositeColor'))
+    popover.style.setProperty('--calendarColor', eventDom.style.getPropertyValue('--calendarColor'))
+    popover.style.setProperty('--oppositeColor', eventDom.style.getPropertyValue('--oppositeColor'))
     header.dataset.isFullday = eventDom.dataset.fullDayEvent
 
     const criteria = container.querySelector('.criteria')

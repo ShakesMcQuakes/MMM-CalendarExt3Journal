@@ -167,14 +167,20 @@ Module.register('MMM-CalendarExt3Journal', {
 
   updateView: function (options) {
     clearTimeout(this.timer)
+    clearTimeout(this._debouncedUpdate)
     this.timer = null
-    this.updateDom(this.config.animationSpeed)
 
-    if (options?.refreshInterval) {
-      this.timer = setTimeout(() => {
-        this.updateView(options)
-      }, options.refreshInterval)
-    }
+    // Debounce: absorb burst CALENDAR_EVENTS broadcasts (e.g. 9 calendars
+    // fetching simultaneously at startup) into a single re-render.
+    this._debouncedUpdate = setTimeout(() => {
+      this.updateDom(this.config.animationSpeed)
+
+      if (options?.refreshInterval) {
+        this.timer = setTimeout(() => {
+          this.updateView(options)
+        }, options.refreshInterval)
+      }
+    }, 800)
   },
 
   getDom: function() {
